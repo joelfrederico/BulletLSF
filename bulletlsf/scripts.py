@@ -1,6 +1,7 @@
 import argparse
 import shlex, subprocess
 import os
+import prompter
 
 def _bulletlsf():
 	parser = argparse.ArgumentParser(description="Lies")
@@ -23,6 +24,11 @@ def _bulletlsf():
 	command = "bsub -a mympi -q {queue}{optional_cmd} -W {Wait} -oo {log} {bin}".format(queue=args.queue, optional_cmd=optional_cmd, sla=args.sla, Wait=args.Wait, log=args.log, bin=args.bin)
 
 	print(command)
+
+	if prompter.yesno('Is this command good?'):
+		subprocess.run(shlex.split(command))
+
+
 
 def add_argument(parser, *args, environ_var=None, help_str='', required=True):
 	if environ_var is not None:
