@@ -2,6 +2,7 @@ import argparse
 import shlex, subprocess
 import os
 import prompter
+import pdb
 
 def _bulletlsf():
 	parser = argparse.ArgumentParser(description="Lies")
@@ -18,10 +19,21 @@ def _bulletlsf():
 
 	optional_cmd = ''
 
+
+	if args.queue == "bullet":
+		queue    = "bulletmpi"
+		args.sla = None
+
+	elif args.queue == "oak":
+		queue    = "beamphysics"
+		args.sla = None
+	else:
+		queue = args.queue
+
 	if args.sla is not None:
 		optional_cmd += ' -sla {sla}'.format(sla=args.sla)
 
-	command = "bsub -a mympi -q {queue}{optional_cmd} -W {Wait} -oo {log} {bin}".format(queue=args.queue, optional_cmd=optional_cmd, sla=args.sla, Wait=args.Wait, log=args.log, bin=args.bin)
+	command = "bsub -a mympi -q {queue}{optional_cmd} -W {Wait} -oo {log} -n {n} {bin}".format(queue=queue, optional_cmd=optional_cmd, sla=args.sla, Wait=args.Wait, log=args.log, n=args.n, bin=args.bin)
 
 	print(command)
 
